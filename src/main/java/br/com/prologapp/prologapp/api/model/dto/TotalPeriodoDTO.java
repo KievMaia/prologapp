@@ -1,6 +1,5 @@
 package br.com.prologapp.prologapp.api.model.dto;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class TotalPeriodoDTO {
 
-	private List<MarcacaoVinculoInicioFimVO> marcacaoVinculoInicioFimList = new ArrayList<>();
+	private List<MarcacaoVinculoInicioFimVO> marcacaoListTotalPeriodo = new ArrayList<>();
 	
 	private Map<String, String> totalPeriodo = new HashMap<>();
 }

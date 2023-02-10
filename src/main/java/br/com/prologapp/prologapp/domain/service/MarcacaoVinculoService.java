@@ -19,23 +19,26 @@ public class MarcacaoVinculoService {
 	@Autowired
 	private MarcacaoVinculoInicioFimRepository marcacaoVinculoInicioFimRepository;
 
-	public TotalPeriodoDTO calculoIntervaloMarcacao(String cpf) {
+	public TotalPeriodoDTO listaTotalPeriodo(String cpf, String dataInicial, String dataFinal) {
+		List<MarcacaoVinculoInicioFimVO> listaMarcacoes = marcacaoVinculoInicioFimRepository.findAllGroupedByDia(cpf, dataInicial, dataFinal);
 
-		TotalPeriodoDTO totalPeriodoDTO = new TotalPeriodoDTO();
-		List<MarcacaoVinculoInicioFimVO> listaMarcacoes = marcacaoVinculoInicioFimRepository.findAllGroupedByDia(cpf);
+		return this.calculoTotalPeriodo(listaMarcacoes);
+	}
+
+	private TotalPeriodoDTO calculoTotalPeriodo(List<MarcacaoVinculoInicioFimVO> listaMarcacoes) {
 		Map<String, Duration> intervalos = new HashMap<>();
-
-		for (MarcacaoVinculoInicioFimVO marcacao : listaMarcacoes) {
-			Duration interval = Duration.between(marcacao.getDataHoraMarcacaoInicio(),
-					marcacao.getDataHoraMarcacaoFim());
-			intervalos.merge(marcacao.getNome(), interval, Duration::plus);
-		}
+		TotalPeriodoDTO totalPeriodoDTO = new TotalPeriodoDTO();
 		
-		for (Map.Entry<String, Duration> entry : intervalos.entrySet()) {
-			totalPeriodoDTO.getTotalPeriodo().put(entry.getKey(), DateUtils.formatDuration(entry.getValue()));
-		}
-
-		totalPeriodoDTO.getMarcacaoVinculoInicioFimList().addAll(listaMarcacoes);
+		listaMarcacoes.stream().forEach(marcacao -> {
+		    Duration interval = Duration.between(
+		    		marcacao.getDataHoraMarcacaoInicio(), 
+		    		marcacao.getDataHoraMarcacaoFim());
+		    
+		    intervalos.merge(marcacao.getNome(), interval, Duration::plus);
+		});
+		
+		intervalos.entrySet().stream().forEach(entry -> totalPeriodoDTO.getTotalPeriodo().put(entry.getKey(), DateUtils.formatDuration(entry.getValue())));
+		totalPeriodoDTO.getMarcacaoListTotalPeriodo().addAll(listaMarcacoes);
 		
 		return totalPeriodoDTO;
 	}
