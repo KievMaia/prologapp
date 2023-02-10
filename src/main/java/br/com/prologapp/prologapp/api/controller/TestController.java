@@ -10,23 +10,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO;
 import br.com.prologapp.prologapp.domain.repository.MarcacaoVinculoInicioFimRepository;
+import br.com.prologapp.prologapp.domain.service.MarcacaoVinculoService;
 
 @RestController
 @RequestMapping("/v1")
 public class TestController {
 
 	@Autowired
-	private MarcacaoVinculoInicioFimRepository marcacaoVinculoInicioFimRepository;
+	private MarcacaoVinculoService service;
 	
-//	@GetMapping("/marcacao/{codigo}")
-//	public MarcacaoVinculoInicioFimVO busca(@PathVariable Long codigo) {
-//		MarcacaoVinculoInicioFimVO marcacao = marcacaoVinculoInicioFimRepository.findByCodigo(codigo);
-//		
-//		return marcacao;
-//	}
+	@Autowired
+	private MarcacaoVinculoInicioFimRepository marcacaoVinculoInicioFimRepository;
 
 	@GetMapping("/marcacao/completa/{cpf}")
 	public List<MarcacaoVinculoInicioFimVO> lista(@PathVariable String cpf) {
+		service.calculoIntervaloMarcacao(cpf);
 		return marcacaoVinculoInicioFimRepository.findAllGroupedByDia(cpf);
 	}
 }
