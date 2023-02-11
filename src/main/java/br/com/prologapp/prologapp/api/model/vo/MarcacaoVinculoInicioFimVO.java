@@ -16,6 +16,7 @@ public class MarcacaoVinculoInicioFimVO {
 
 	private Long codigo;
 	private String nome;
+	private String colaborador;
 	private Date dia;
 	private ZonedDateTime dataHoraMarcacaoInicio;
 	private ZonedDateTime dataHoraMarcacaoFim;

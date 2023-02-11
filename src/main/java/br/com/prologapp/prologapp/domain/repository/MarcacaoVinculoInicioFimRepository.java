@@ -16,16 +16,17 @@ public interface MarcacaoVinculoInicioFimRepository extends JpaRepository<Marcac
 //	@Query("SELECT mv FROM MarcacaoVinculoInicioFim mv JOIN FETCH mv.marcacaoInicio mi JOIN FETCH mv.marcacaoFim mf WHERE mi.cpfColaborador = :cpf")
 //	List<MarcacaoVinculoInicioFim> findByCpf(String cpf);
 	
-	@Query("SELECT new br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO(mt.codigo, mt.nome, date_trunc('day', mi.dataHoraMarcacao) as dia, " +
+	@Query("SELECT new br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO(mt.codigo, mt.nome, c.nome, date_trunc('day', mi.dataHoraMarcacao) as dia, " +
 	           "mi.dataHoraMarcacao as dataHoraMarcacaoInicio, " +
 	           "mf.dataHoraMarcacao as dataHoraMarcacaoFim) " +
 	           "FROM MarcacaoVinculoInicioFim mvi " +
 	           "JOIN Marcacao mi ON mvi.marcacaoInicio = mi.codigo " +
 	           "JOIN Marcacao mf ON mvi.marcacaoFim = mf.codigo " +
 	           "JOIN MarcacaoTipo mt ON mt.codigo = mi.marcacaoTipo " +
+	           "JOIN Colaborador c ON mi.cpfColaborador = c.cpf " +
 	           "WHERE mi.cpfColaborador = :cpf " +
 	           "AND mi.dataHoraMarcacao BETWEEN to_date(:dataInicial, 'DD/MM/YYYY') AND to_date(:dataFinal, 'DD/MM/YYYY') " +
-	           "GROUP BY mt.codigo, dia, mi.dataHoraMarcacao, mf.dataHoraMarcacao " +
+	           "GROUP BY mt.codigo, c.nome, dia, mi.dataHoraMarcacao, mf.dataHoraMarcacao " +
 	           "ORDER BY dia")
 	List<MarcacaoVinculoInicioFimVO> findAllGroupedByDia(@Param("cpf") String cpf, @Param("dataInicial") String dataIncial, @Param("dataFinal") String dataFinal);
 }
