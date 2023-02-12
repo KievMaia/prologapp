@@ -12,9 +12,6 @@ import br.com.prologapp.prologapp.domain.model.MarcacaoVinculoInicioFim;
 
 @Repository
 public interface MarcacaoVinculoInicioFimRepository extends JpaRepository<MarcacaoVinculoInicioFim, Long> {
-
-//	@Query("SELECT mv FROM MarcacaoVinculoInicioFim mv JOIN FETCH mv.marcacaoInicio mi JOIN FETCH mv.marcacaoFim mf WHERE mi.cpfColaborador = :cpf")
-//	List<MarcacaoVinculoInicioFim> findByCpf(String cpf);
 	
 	@Query("SELECT new br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO(mt.codigo, mt.nome, c.nome, date_trunc('day', mi.dataHoraMarcacao) as dia, " +
 	           "mi.dataHoraMarcacao as dataHoraMarcacaoInicio, " +
