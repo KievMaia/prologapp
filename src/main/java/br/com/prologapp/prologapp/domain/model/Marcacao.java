@@ -31,8 +31,9 @@ public class Marcacao {
 	@JoinColumn(name = "COD_TIPO_MARCACAO", nullable = false)
 	private MarcacaoTipo marcacaoTipo;
 
-	@Column(name = "CPF_COLABORADOR", nullable = false)
-	private String cpfColaborador;
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CPF_COLABORADOR", referencedColumnName = "CPF")
+	private Colaborador colaborador;
 
 	@Column(name = "DATA_HORA_MARCACAO", nullable = false)
 	private ZonedDateTime dataHoraMarcacao;
