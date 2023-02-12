@@ -1,9 +1,13 @@
 package br.com.prologapp.prologapp.domain.service;
 
 import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,28 +24,62 @@ public class MarcacaoVinculoService {
 	private MarcacaoVinculoInicioFimRepository marcacaoVinculoInicioFimRepository;
 
 	public TotalPeriodoDTO listaTotalPeriodo(String cpf, String dataInicial, String dataFinal) {
-		List<MarcacaoVinculoInicioFimVO> listaMarcacoes = marcacaoVinculoInicioFimRepository.findAllGroupedByDia(cpf, dataInicial, dataFinal);
-
-		return this.calculoTotalPeriodo(listaMarcacoes);
-	}
-
-	private TotalPeriodoDTO calculoTotalPeriodo(List<MarcacaoVinculoInicioFimVO> listaMarcacoes) {
-		Map<String, Duration> intervalos = new HashMap<>();
 		TotalPeriodoDTO totalPeriodoDTO = new TotalPeriodoDTO();
 		
-		listaMarcacoes.stream().forEach(marcacao -> {
-		    Duration interval = Duration.between(
-		    		marcacao.getDataHoraMarcacaoInicio(), 
-		    		marcacao.getDataHoraMarcacaoFim());
-		    
-		    intervalos.merge(marcacao.getNome(), interval, Duration::plus);
-		});
+		List<MarcacaoVinculoInicioFimVO> listaMarcacoes = marcacaoVinculoInicioFimRepository.findAllGroupedByDia(cpf,
+				dataInicial, dataFinal);
+
+		Map<String, List<MarcacaoVinculoInicioFimVO>> mapResultados = new TreeMap<>(listaMarcacoes
+				.stream()
+				.collect(
+						Collectors.groupingBy(marcacao -> DateUtils.formataData((marcacao.getDia())))));
+
+		this.calculoTotalPeriodo(mapResultados, totalPeriodoDTO.getTotalPeriodo());
 		
-		intervalos.entrySet().stream().forEach(entry -> totalPeriodoDTO.getTotalPeriodo().put(entry.getKey(), DateUtils.formatDuration(entry.getValue())));
-		totalPeriodoDTO.getMarcacaoListTotalPeriodo().addAll(listaMarcacoes);
+		this.calculoHorasNoturnasCLT(mapResultados, totalPeriodoDTO.getHorasNoturnasCLT());
+		
+		totalPeriodoDTO.getMarcacaoListTotalPeriodo().putAll(mapResultados);
 		
 		return totalPeriodoDTO;
 	}
 
-	
+	private void calculoTotalPeriodo(Map<String, List<MarcacaoVinculoInicioFimVO>> mapResultados, Map<String, String> mapTotalPeriodo) {
+		Map<String, Duration> intervalos = new HashMap<>();
+
+		mapResultados.values()
+				.stream()
+				.flatMap(List::stream)
+				.forEach(marcacao -> {
+							Duration interval = Duration.between(marcacao.getDataHoraMarcacaoInicio().withZoneSameInstant(ZoneId.of("America/Sao_Paulo")) ,
+									marcacao.getDataHoraMarcacaoFim().withZoneSameInstant(ZoneId.of("America/Sao_Paulo")));
+							
+							intervalos.merge(marcacao.getNome(), interval, Duration::plus);
+		});
+
+		intervalos
+			.entrySet()
+			.stream()
+			.forEach(entry -> mapTotalPeriodo.put(entry.getKey(), DateUtils.formatDuration(entry.getValue())));
+	}
+
+	private void calculoHorasNoturnasCLT(Map<String, List<MarcacaoVinculoInicioFimVO>> mapResultados, Map<String, String> horasNoturnasCLT) {
+		Map<String, Duration> intervalosCLT = new HashMap<>();
+		
+		mapResultados.values()
+				.stream()
+				.flatMap(List::stream)
+				.forEach(marcacao -> {
+							ZonedDateTime dataInicio = marcacao.getDataHoraMarcacaoInicio().withZoneSameInstant(ZoneId.of("America/Sao_Paulo"));
+							ZonedDateTime dataFim = marcacao.getDataHoraMarcacaoFim().withZoneSameInstant(ZoneId.of("America/Sao_Paulo"));
+							
+							if (dataInicio.getHour() >= 22 || dataInicio.getHour() <= 5) {
+								Duration interval = Duration.between(dataInicio, dataFim);
+								
+								intervalosCLT.merge(marcacao.getNome(), interval, Duration::plus);
+							}
+		});
+		intervalosCLT.entrySet().stream().forEach(entry -> horasNoturnasCLT.put(entry.getKey(),
+				DateUtils.formatDuration(entry.getValue())));
+	}
+
 }
