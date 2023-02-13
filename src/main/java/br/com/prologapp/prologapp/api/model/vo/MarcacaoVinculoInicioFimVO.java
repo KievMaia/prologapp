@@ -1,6 +1,7 @@
 package br.com.prologapp.prologapp.api.model.vo;
 
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class MarcacaoVinculoInicioFimVO {
 	private Long codigo;
 	private String nome;
 	private String colaborador;
-	private OffsetDateTime dia;
+	private Date dia;
 	private OffsetDateTime dataHoraMarcacaoInicio;
 	private OffsetDateTime dataHoraMarcacaoFim;
 

@@ -14,7 +14,7 @@ import br.com.prologapp.prologapp.domain.model.MarcacaoVinculoInicioFim;
 @Repository
 public interface MarcacaoVinculoInicioFimRepository extends JpaRepository<MarcacaoVinculoInicioFim, Long> {
 	
-	@Query("SELECT new br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO(mt.codigo, mt.nome, c.nome, mi.dataHoraMarcacao as dia, " +
+	@Query("SELECT new br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO(mt.codigo, mt.nome, c.nome, date_trunc('day', mi.dataHoraMarcacao) as dia, " +
 	           "mi.dataHoraMarcacao as dataHoraMarcacaoInicio, " +
 	           "mf.dataHoraMarcacao as dataHoraMarcacaoFim) " +
 	           "FROM MarcacaoVinculoInicioFim mvi " +

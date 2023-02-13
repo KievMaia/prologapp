@@ -20,13 +20,13 @@ public class DateUtils {
 	}
 	
 	/**
-	 * Formata {@link Date} para {@link String} no formato: dd/MM/yyyy.
+	 * Formata {@link Date} para {@link String} no formato: dd-MM-yyyy.
 	 *
 	 * @param data {@link Date}: a data a ser convertida em {@link String}
 	 * @return {@link String}
 	 */
 	public static String formataData(Date data) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		return dateFormat.format(data);
 	}
 }

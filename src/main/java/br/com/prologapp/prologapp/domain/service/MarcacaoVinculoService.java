@@ -27,8 +27,8 @@ public class MarcacaoVinculoService {
 		List<MarcacaoVinculoInicioFimVO> listaMarcacoes = marcacaoVinculoInicioFimRepository.findAllGroupedByDia(cpf,
 				dataInicial, dataFinal);
 
-		Map<OffsetDateTime, List<MarcacaoVinculoInicioFimVO>> mapResultados = listaMarcacoes.stream()
-		        .collect(Collectors.groupingBy(marcacao -> marcacao.getDia()));
+		Map<String, List<MarcacaoVinculoInicioFimVO>> mapResultados = listaMarcacoes.stream()
+		        .collect(Collectors.groupingBy(marcacao ->  DateUtils.formataData(marcacao.getDia())));
 
 		this.calculoTotalPeriodo(mapResultados, totalPeriodoDTO.getTotalPeriodo());
 		
@@ -39,7 +39,7 @@ public class MarcacaoVinculoService {
 		return totalPeriodoDTO;
 	}
 
-	private void calculoTotalPeriodo(Map<OffsetDateTime, List<MarcacaoVinculoInicioFimVO>> mapResultados, Map<String, String> mapTotalPeriodo) {
+	private void calculoTotalPeriodo(Map<String, List<MarcacaoVinculoInicioFimVO>> mapResultados, Map<String, String> mapTotalPeriodo) {
 		Map<String, Duration> intervalos = new HashMap<>();
 
 		mapResultados.values()
@@ -58,7 +58,7 @@ public class MarcacaoVinculoService {
 			.forEach(entry -> mapTotalPeriodo.put(entry.getKey(), DateUtils.formatDuration(entry.getValue())));
 	}
 
-	private void calculoHorasNoturnasCLT(Map<OffsetDateTime, List<MarcacaoVinculoInicioFimVO>> mapResultados, Map<String, String> horasNoturnasCLT) {
+	private void calculoHorasNoturnasCLT(Map<String, List<MarcacaoVinculoInicioFimVO>> mapResultados, Map<String, String> horasNoturnasCLT) {
 		Map<String, Duration> intervalosCLT = new HashMap<>();
 		
 		mapResultados.values()

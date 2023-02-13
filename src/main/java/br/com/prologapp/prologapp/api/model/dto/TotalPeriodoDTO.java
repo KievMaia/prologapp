@@ -1,6 +1,5 @@
 package br.com.prologapp.prologapp.api.model.dto;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class TotalPeriodoDTO {
 
-	private Map<OffsetDateTime, List<MarcacaoVinculoInicioFimVO>> marcacaoListTotalPeriodo = new TreeMap<>();
+	private Map<String, List<MarcacaoVinculoInicioFimVO>> marcacaoListTotalPeriodo = new TreeMap<>();
 	
 	private Map<String, String> totalPeriodo = new TreeMap<>();
 	
