@@ -1,6 +1,6 @@
 package br.com.prologapp.prologapp.domain.model;
 
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +36,7 @@ public class Marcacao {
 	private Colaborador colaborador;
 
 	@Column(name = "DATA_HORA_MARCACAO", nullable = false)
-	private ZonedDateTime dataHoraMarcacao;
+	private OffsetDateTime dataHoraMarcacao;
 
 	@Column(name = "TIPO_MARCACAO", nullable = false)
 	private String tipoMarcacao;
