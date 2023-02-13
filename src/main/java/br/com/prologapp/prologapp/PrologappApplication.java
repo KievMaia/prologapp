@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PrologappApplication {
 
 	public static void main(String[] args) {
-		TimeZone.setDefault(TimeZone.getTimeZone("America/Sao_Paulo"));
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		SpringApplication.run(PrologappApplication.class, args);
 	}
 
