@@ -1,5 +1,6 @@
 package br.com.prologapp.prologapp.domain.repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,7 @@ import br.com.prologapp.prologapp.domain.model.MarcacaoVinculoInicioFim;
 @Repository
 public interface MarcacaoVinculoInicioFimRepository extends JpaRepository<MarcacaoVinculoInicioFim, Long> {
 	
-	@Query("SELECT new br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO(mt.codigo, mt.nome, c.nome, date_trunc('day', mi.dataHoraMarcacao) as dia, " +
+	@Query("SELECT new br.com.prologapp.prologapp.api.model.vo.MarcacaoVinculoInicioFimVO(mt.codigo, mt.nome, c.nome, mi.dataHoraMarcacao as dia, " +
 	           "mi.dataHoraMarcacao as dataHoraMarcacaoInicio, " +
 	           "mf.dataHoraMarcacao as dataHoraMarcacaoFim) " +
 	           "FROM MarcacaoVinculoInicioFim mvi " +
@@ -22,8 +23,8 @@ public interface MarcacaoVinculoInicioFimRepository extends JpaRepository<Marcac
 	           "JOIN MarcacaoTipo mt ON mt.codigo = mi.marcacaoTipo " +
 	           "JOIN Colaborador c ON mi.colaborador = c.cpf " +
 	           "WHERE mi.colaborador.cpf = :cpf " +
-	           "AND mi.dataHoraMarcacao BETWEEN to_date(:dataInicial, 'DD/MM/YYYY') AND to_date(:dataFinal, 'DD/MM/YYYY') " +
+	           "AND mi.dataHoraMarcacao BETWEEN :dataInicial AND :dataFinal " +
 	           "GROUP BY mt.codigo, c.nome, dia, mi.dataHoraMarcacao, mf.dataHoraMarcacao " +
 	           "ORDER BY dia")
-	List<MarcacaoVinculoInicioFimVO> findAllGroupedByDia(@Param("cpf") String cpf, @Param("dataInicial") String dataIncial, @Param("dataFinal") String dataFinal);
+	List<MarcacaoVinculoInicioFimVO> findAllGroupedByDia(@Param("cpf") String cpf, @Param("dataInicial") OffsetDateTime dataInicial, @Param("dataFinal") OffsetDateTime dataFinal);
 }

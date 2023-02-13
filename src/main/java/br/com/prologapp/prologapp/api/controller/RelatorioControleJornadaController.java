@@ -1,5 +1,7 @@
 package br.com.prologapp.prologapp.api.controller;
 
+import java.time.OffsetDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,10 @@ public class RelatorioControleJornadaController {
 			@RequestParam(value = "dataInicial", required = true) String dataInicial,
 			@RequestParam(value = "dataFinal", required = true) String dataFinal
 			) {
-		return service.listaTotalPeriodo(cpf, dataInicial, dataFinal);
+		OffsetDateTime dataInicialConvertida = OffsetDateTime.parse(dataInicial);
+		OffsetDateTime dataFinalConvertida = OffsetDateTime.parse(dataFinal);
+		  
+		return service.listaTotalPeriodo(cpf, dataInicialConvertida, dataFinalConvertida);
 	}
 	
 }
