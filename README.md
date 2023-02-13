@@ -1,4 +1,4 @@
-# prologapp
+# Prologapp
 Teste PrologApp
 
 <p>Este projeto foi construído com as seguintes tecnologias:</p>
